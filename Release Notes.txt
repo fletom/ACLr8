@@ -1,0 +1,21 @@
+1.2.1
+	- Fixed removing ACL from symbolic links
+
+1.2
+	- Added the option to repair permissions while verifying them
+	- Grammar error (for one unexpected ACL) corrected
+	- Much better error handling
+	- Check to see if the system is Mac OS X
+	- Check to see if the diskutil binary is available
+	- KeyboardInterrupt handling (Ctrl-C)
+	- Now displays version number on launch
+	- Added an instruction on how to stop the program
+	- Improved documentation
+	- Other bug fixes
+
+1.1
+	- Bug Fixes
+	- Added a check and a message for no unexpected ACL
+
+1.0
+	- Initial Release

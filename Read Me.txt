@@ -1,0 +1,20 @@
+ACLr8 1.2.1
+by nomulous (aka. Fletcher Tomalty)
+on September 13th, 2009
+under the do-whatever-the-fuck-you-want-with-it license.
+
+Description:
+	ACLr8 is a command-line tool written in Python that will analyze your entire hard drive searching for files that cause the "ACL found but not expected" errors in disk utility, and remove all ACL from them.
+
+Although these errors are relatively harmless, they can be quite annoying and they cause permission repairs to take much longer than they should. ACLr8 is very safe, but of course you use it at your own risk.
+
+Instructions:
+	1. Run the program.
+	2. Enter your password as necessary.
+	3. There is no step 3.
+
+Disclaimer:
+	The creator of this program takes no responsibility for anything it may do, use at your own risk.
+
+Website:
+	http://nomulous.com/goodies/ACLr8/

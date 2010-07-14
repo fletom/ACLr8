@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+#
+# ACLr8 1.2
+# by nomulous (aka. Fletcher Tomalty)
+# on September 12th, 2009
+# under the do-whatever-the-fuck-you-want-with-it licence.
+#
+
+try:
+	from os import path, popen, system
+	import re
+	
+	version = 1.2
+	
+	print '\nWelcome to ACLr8 version '+str(version)+' by nomulous.'
+	print 'Press Ctrl-C to stop the program at any time.\n'
+	
+	try:
+		import MacOS
+	except ImportError:
+		print 'Sorry, MacOS X is required.\n'
+		exit(-1)
+	
+	if not path.isfile('/usr/sbin/diskutil'):
+		print 'Sorry, the "diskutil" binary could not be found.\n'
+		exit(-1)
+	
+	shouldRepair = raw_input('Would you like to repair permissions while reading them? (y/n)  ')
+	shouldRepair = shouldRepair.lower().lstrip(' \n\t\r\0')
+	shouldAsk = True
+	while shouldAsk:
+		if (shouldRepair == 'y' or shouldRepair == 'yes' or shouldRepair == '1' or shouldRepair == 'true'):
+			shouldAsk = False
+			print '\nReading and repairing permission errors... (this can take a very long time)'
+			permissionsReport = popen('sudo diskutil repairPermissions /').read()
+		elif (shouldRepair == 'n' or shouldRepair == 'no' or shouldRepair == '0' or shouldRepair == 'false'):
+			shouldAsk = False
+			print '\nReading permission errors... (this can take a very long time)'
+			permissionsReport = popen('sudo diskutil verifyPermissions /').read()
+		else:
+			shouldRepair = raw_input('Please specify either "y" or "n" and press enter...  ')
+			shouldRepair = shouldRepair.lower().lstrip(' \n\t\r\0')
+	print 'done.\n'
+	
+	print 'Creating unexpected ACL database...'
+	permissionsReportLines = permissionsReport.split('\n')
+	filesWithUnexpectedACL = []
+	for line in permissionsReportLines:
+		if not re.match('ACL found but not expected on ".*"',line): continue
+		line = line.replace('ACL found but not expected on ','')
+		line = line[1:]
+		line = '"/'+line
+		filesWithUnexpectedACL.append(line)
+	
+	if len(filesWithUnexpectedACL) == 0:
+		print 'done. There were no files with unexpected ACL.'
+	else:
+		print 'done. There '+(('was one ') if (len(filesWithUnexpectedACL) == 1) else ('were '+str(len(filesWithUnexpectedACL))+' files ')) +'with unexpected ACL.\n'
+		print 'Removing ACL from all files in the database...'
+		for file in filesWithUnexpectedACL:
+			system('sudo chmod -h -N ' + file)
+		print 'done.'
+		
+	print '\nFinished! The ACL repair completed successfully.'
+except SystemExit: pass
+except KeyboardInterrupt:
+	print '\n\nYou have manually terminated the program.'
+except:
+	print '\n\nAn unknown error has forced the program to terminate.'
