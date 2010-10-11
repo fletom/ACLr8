@@ -50,6 +50,7 @@ try:
 		line = line.replace('ACL found but not expected on ','')
 		line = line[1:]
 		line = '"/'+line
+		line = line.replace('"', '\\"')
 		filesWithUnexpectedACL.append(line)
 	
 	if len(filesWithUnexpectedACL) == 0:
