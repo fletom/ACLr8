@@ -1,3 +1,6 @@
+1.2.2
+	- Fixed bug where files with double quotes in their names would not be processed properly
+
 1.2.1
 	- Fixed removing ACL from symbolic links
 

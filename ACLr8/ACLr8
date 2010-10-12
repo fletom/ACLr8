@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# ACLr8 1.2
-# by nomulous (aka. Fletcher Tomalty)
+# ACLr8 1.2.2
+# by nomulous (a.k.a. Fletcher Tomalty)
 # on September 12th, 2009
 # under the do-whatever-the-fuck-you-want-with-it licence.
 #
@@ -10,7 +10,7 @@ try:
 	from os import path, popen, system
 	import re
 	
-	version = 1.2
+	version = "1.2.2"
 	
 	print '\nWelcome to ACLr8 version '+str(version)+' by nomulous.'
 	print 'Press Ctrl-C to stop the program at any time.\n'
@@ -46,11 +46,12 @@ try:
 	permissionsReportLines = permissionsReport.split('\n')
 	filesWithUnexpectedACL = []
 	for line in permissionsReportLines:
-		if not re.match('ACL found but not expected on ".*"',line): continue
-		line = line.replace('ACL found but not expected on ','')
-		line = line[1:]
-		line = '"/'+line
+		line = line.strip()
+		match = re.compile('^ACL found but not expected on "(.*)"\.?$').search(line)
+		if match == None: continue
+		line = match.group(1)
 		line = line.replace('"', '\\"') #For filenames with '"' in them, escape for the command line
+		line = '"/' + line + '"'
 		filesWithUnexpectedACL.append(line)
 	
 	if len(filesWithUnexpectedACL) == 0:

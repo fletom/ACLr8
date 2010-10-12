@@ -1,4 +1,4 @@
-ACLr8 1.2.1
+ACLr8 1.2.2
 by nomulous (aka. Fletcher Tomalty)
 on September 13th, 2009
 under the do-whatever-the-fuck-you-want-with-it license.
