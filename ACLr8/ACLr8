@@ -15,9 +15,7 @@ try:
 	print '\nWelcome to ACLr8 version '+str(version)+' by nomulous.'
 	print 'Press Ctrl-C to stop the program at any time.\n'
 	
-	try:
-		import MacOS
-	except ImportError:
+	if os.uname()[0] != 'Darwin':
 		print 'Sorry, MacOS X is required.\n'
 		exit(-1)
 	
