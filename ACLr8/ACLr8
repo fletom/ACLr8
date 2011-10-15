@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 #
-# ACLr8 1.2.2
+# ACLr8 1.3.0
 # by nomulous (a.k.a. Fletcher Tomalty)
-# on September 12th, 2009
-# under the do-whatever-the-fuck-you-want-with-it licence.
-#
 
 try:
 	from os import path, popen, system, uname
 	import re
 	
-	version = "1.2.2"
+	version = "1.3.0"
 	
 	print '\nWelcome to ACLr8 version '+str(version)+' by nomulous.'
 	print 'Press Ctrl-C to stop the program at any time.\n'
