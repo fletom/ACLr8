@@ -1,5 +1,5 @@
 ACLr8 1.3.0
-by nomulous (aka. Fletcher Tomalty)
+by Fletcher Tomalty
 
 Description:
 	ACLr8 is a command-line tool written in Python that will analyze your entire hard drive searching for files that cause the "ACL found but not expected" errors in disk utility, and remove all ACL from them.
