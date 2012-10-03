@@ -9,7 +9,7 @@ try:
 	
 	version = "1.3.0"
 	
-	print '\nWelcome to ACLr8 version '+str(version)+' by nomulous.'
+	print '\nWelcome to ACLr8 version {0} by nomulous.'.format(version)
 	print 'Press Ctrl-C to stop the program at any time.\n'
 	
 	if uname()[0] != 'Darwin':
@@ -20,47 +20,50 @@ try:
 		print 'Sorry, the "diskutil" binary could not be found.\n'
 		exit(-1)
 	
-	shouldRepair = raw_input('Would you like to repair permissions while reading them? (y/n)  ')
-	shouldRepair = shouldRepair.lower().lstrip(' \n\t\r\0')
-	shouldAsk = True
-	while shouldAsk:
-		if (shouldRepair == 'y' or shouldRepair == 'yes' or shouldRepair == '1' or shouldRepair == 'true'):
-			shouldAsk = False
+	should_repair = raw_input('Would you like to repair permissions while reading them? (y/n)  ')
+	while True:
+		should_repair = should_repair.lower().strip(' \n\t\r\0')
+		if should_repair == 'y':
 			print '\nReading and repairing permission errors... (this can take a very long time)'
-			permissionsReport = popen('sudo diskutil repairPermissions /').read()
-		elif (shouldRepair == 'n' or shouldRepair == 'no' or shouldRepair == '0' or shouldRepair == 'false'):
-			shouldAsk = False
+			permissions_report = popen('sudo diskutil repairPermissions /').read()
+			break
+		elif should_repair == 'n':
 			print '\nReading permission errors... (this can take a very long time)'
-			permissionsReport = popen('sudo diskutil verifyPermissions /').read()
+			permissions_report = popen('sudo diskutil verifyPermissions /').read()
+			break
 		else:
-			shouldRepair = raw_input('Please specify either "y" or "n" and press enter...  ')
-			shouldRepair = shouldRepair.lower().lstrip(' \n\t\r\0')
+			should_repair = raw_input('Please specify either "y" or "n" and press enter...  ')
 	print 'done.\n'
 	
 	print 'Creating unexpected ACL database...'
-	permissionsReportLines = permissionsReport.split('\n')
-	filesWithUnexpectedACL = []
-	for line in permissionsReportLines:
+	permissions_report_lines = permissions_report.split('\n')
+	files_with_unexpected_ACL = []
+	for line in permissions_report_lines:
 		line = line.strip()
 		match = re.compile('^ACL found but not expected on "(.*)"\.?$').search(line)
-		if match == None: continue
-		line = match.group(1)
-		line = line.replace('"', '\\"') #For filenames with '"' in them, escape for the command line
-		line = '"/' + line + '"'
-		filesWithUnexpectedACL.append(line)
+		
+		if match is not None:
+			file_path = match.group(1)
+			
+			# For filenames with '"' in them, escape for the command line, as DU does not do this.
+			file_path = file_path.replace('"', '\\"')
+			
+			file_path = '"/' + file_path + '"'
+			files_with_unexpected_ACL.append(file_path)
 	
-	if len(filesWithUnexpectedACL) == 0:
-		print 'done. There were no files with unexpected ACL.'
-	else:
-		print 'done. There '+(('was one ') if (len(filesWithUnexpectedACL) == 1) else ('were '+str(len(filesWithUnexpectedACL))+' files ')) +'with unexpected ACL.\n'
+	
+	print 'done. There {0} files with unexpected ACL.\n'.format(
+		{0: 'were no', 1: 'was one'}.get(len(files_with_unexpected_ACL)) or 'were {0}'.format(len(files_with_unexpected_ACL))
+	)
+	
+	if files_with_unexpected_ACL:
 		print 'Removing ACL from all files in the database...'
-		for file in filesWithUnexpectedACL:
+		for file in files_with_unexpected_ACL:
 			system('sudo chmod -h -N ' + file)
 		print 'done.'
 		
 	print '\nFinished! The ACL repair completed successfully.'
-except SystemExit: pass
+except SystemExit:
+	pass
 except KeyboardInterrupt:
 	print '\n\nYou have manually terminated the program.'
-except:
-	print '\n\nAn unknown error has forced the program to terminate.'
